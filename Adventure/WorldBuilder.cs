@@ -6,11 +6,19 @@ using System.Threading.Tasks;
 
 namespace Adventure
 {
-    class Program
+    class WorldBuilder
     {
-        static void Main(string[] args)
+        // List of rooms
+
+        private void CreateRooms()
         {
-            // Hello world
+
+        }
+
+        private void CreateItems()
+        {
+
         }
     }
+
 }

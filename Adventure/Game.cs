@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace Adventure
 {
-    class Program
+    class Game
     {
-        static void Main(string[] args)
+        public void NewGame()
         {
-            // Hello world
+
+        }
+
+        private void Parse()
+        {
+
         }
     }
 }

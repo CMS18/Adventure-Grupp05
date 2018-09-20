@@ -11,11 +11,12 @@ namespace Adventure
         public string ItemName()
         {
             string name = null;
+            return name;
         }
 
         private string Description()
         {
-
+            return "";
         }
         // Exit list
     }

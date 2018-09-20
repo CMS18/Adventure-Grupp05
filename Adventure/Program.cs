@@ -11,6 +11,7 @@ namespace Adventure
         static void Main(string[] args)
         {
             // Hello world
+
         }
     }
 }

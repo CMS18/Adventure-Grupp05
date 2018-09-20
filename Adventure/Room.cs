@@ -11,7 +11,7 @@ namespace Adventure
         // Move genom att kolla på utgångar i rumet
         string roomName = "";
 
-        List<string> roomInventory = new List<string>;
+        //List<string> roomInventory = new List<string>;
 
         private string showDescription()
         {

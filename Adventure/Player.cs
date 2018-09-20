@@ -9,8 +9,8 @@ namespace Adventure
     class Player
     {
         public string Name { get; set; }
-        List<items> inventory = new List<items>;
-        var currPosition = 0;
+        //List<items> inventory = new List<items>;
+        //var currPosition = 0;
 
         public void PickupItem()
         {
@@ -29,7 +29,7 @@ namespace Adventure
 
         public void Move()
         {
-            currPosition = 0; // New position
+            //currPosition = 0; // New position
         }
     }
 }

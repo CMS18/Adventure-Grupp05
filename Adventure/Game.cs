@@ -15,7 +15,9 @@ namespace Adventure
 
         private void Parse()
         {
-
+            string input = Console.ReadLine();
+            string[] words = input.Split(' ');
+            Console.Write(words[0]);
         }
     }
 }

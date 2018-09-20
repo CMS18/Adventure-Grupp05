@@ -10,7 +10,7 @@ namespace Adventure
     {
         public void NewGame()
         {
-
+            Console.WriteLine("Welcome to Adventure!");
         }
 
         private void Parse()

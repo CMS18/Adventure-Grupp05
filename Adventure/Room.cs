@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Adventure
 {
-    class Room
+    class Rooms
     {
         // Move genom att kolla på utgångar i rumet
         string roomName = "";

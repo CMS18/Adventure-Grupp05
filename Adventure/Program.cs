@@ -11,7 +11,7 @@ namespace Adventure
         static void Main(string[] args)
         {
             // Hello world
-
+            World world = new World();
         }
     }
 }

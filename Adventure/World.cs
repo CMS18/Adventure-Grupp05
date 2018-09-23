@@ -13,15 +13,17 @@ namespace Adventure
 
     class Room
     {
-        string name;
-        int roomId;
+        //string name;
+        //int roomId;
 
-        public Room(string name, int roomId)
-        {
-            this.name = name;
-            this.roomId = roomId;
-            Description();
-        }
+        //public Room(string name, int roomId)
+        //{
+        //    this.name = name;
+        //    this.roomId = roomId;
+        //    Description();
+        //}
+
+        Rooms room1 = new Rooms(1, "Room 1", "This is the first room");
 
         public void Look()
         {
@@ -30,7 +32,7 @@ namespace Adventure
 
         private string Description()
         {
-            return $"This is {name} with Room ID: {roomId}";
+            return $"This is {room1.RoomName} with Room ID: {room1.RoomID}";
         }
     }
 
@@ -38,7 +40,7 @@ namespace Adventure
     {
         private Connection(int idFrom, int idTo)
         {
-            List<> 
+            List<Item> Connections {  }
         }
     }
 }

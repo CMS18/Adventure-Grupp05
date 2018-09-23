@@ -31,5 +31,7 @@ namespace Adventure
         {
             //currPosition = 0; // New position
         }
+
+        List<String> Actions = new List<String> { "MOVE", "TAKE", "DROP", "LOOK", "OPEN", "CLOSE", "GO" };
     }
 }

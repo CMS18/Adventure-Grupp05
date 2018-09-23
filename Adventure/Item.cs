@@ -8,22 +8,23 @@ namespace Adventure
 {
     abstract class Item
     {
-        public string ItemName()
+        public string Name { get; set; }
+        private string Description { get; set; }
+        public int ID { get; set; }
+
+        public Item(int roomID, string itemDescription, string itemName )
         {
-            string name = null;
-            return name;
+            ID = roomID;
+            Description = itemDescription;
+            Name = itemName;
         }
 
-        private string Description()
-        {
-            return "";
-        }
         // Exit list
     }
 
 
-    class Key : Item
-    {
+    //class Key : Item
+    //{
 
-    }
+    //}
 }

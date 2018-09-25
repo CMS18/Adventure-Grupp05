@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 
 namespace Adventure
 {
-    abstract class Item
+    public class Item
     {
         public string Name { get; set; }
         private string Description { get; set; }
         public int ID { get; set; }
+        public bool Visible { get; set; }
 
-        public Item(int roomID, string itemDescription, string itemName )
+        public Item(int itemID, string itemName, string itemDescription, bool visible )
         {
-            ID = roomID;
+            ID = itemID;
             Description = itemDescription;
             Name = itemName;
+            Visible = visible;
         }
 
         // Exit list

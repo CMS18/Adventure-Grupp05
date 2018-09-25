@@ -8,6 +8,7 @@ namespace Adventure
 {
     class Player
     {
+
         public string Name { get; set; }
         //List<items> inventory = new List<items>;
         //var currPosition = 0;
@@ -20,7 +21,7 @@ namespace Adventure
         public void Inventory()
         {
             // Show inventory
-            List<string> PlayerInventory = new List<string> { "Key", "Sword" };
+            //List<string> PlayerInventory = new List<string> { "Key", "Sword" };
         }
 
         public void Use()
@@ -32,6 +33,7 @@ namespace Adventure
         {
             //currPosition = 0; // New position
         }
-        List<String> Actions = new List<String> { "MOVE", "TAKE", "DROP", "LOOK", "OPEN", "CLOSE", "GO" };
+
+        
     }
 }

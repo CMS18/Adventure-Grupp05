@@ -8,47 +8,24 @@ namespace Adventure
 {
     class World
     {
-        List<Rooms> RoomList = new List<Rooms>()
+        List<Room> RoomList = new List<Room>()
         {
-            new Rooms(1, "Sitting Room", "This is the sitting room"),
-            new Rooms(2, "Kitchen", "This is the kitchen"),
-            new Rooms(3, "Basement", "A spooky basement")
+            new Room(0, "Sitting Room", "This is the sitting room", false),
+            new Room(0, "Kitchen", "This is the kitchen", false),
+            new Room(1, "Basement", "A spooky basement", false),
+            new Room(1, "Outside", "The outside", true)
         };
         
+
+
         //Rooms SittingRoom = new Rooms(1, "Sitting Room", "The living room is old and worn, with tattered drapes hanging on the walls. " +
         //        "To the north is a fireplace that looks like it hasn't been lit for a long time.");
         //Rooms Kitchen = new Rooms(2, "Kitchen", "This is a kitchen");
         //Rooms Basement = new Rooms(3, "Basement", "This is a basement");
-    }
 
-    class Room
-    {
-        string name;
-        int roomId;
-
-        public Room(string name, int roomId)
+        List<Item> PlayerInventory = new List<Item>()
         {
-            this.name = name;
-            this.roomId = roomId;
-            Description();
-        }
-
-        public void Look()
-        {
-            Console.WriteLine(Description());
-        }
-
-        private string Description()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    class Connection
-    {
-        private Connection(int idFrom, int idTo)
-        {
-            List<Item> connections = new List<Item>();
-        }
+            
+        };
     }
 }

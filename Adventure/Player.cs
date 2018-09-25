@@ -14,12 +14,13 @@ namespace Adventure
 
         public void PickupItem()
         {
-
+            
         }
 
         public void Inventory()
         {
             // Show inventory
+            List<string> PlayerInventory = new List<string> { "Key", "Sword" };
         }
 
         public void Use()
@@ -31,7 +32,6 @@ namespace Adventure
         {
             //currPosition = 0; // New position
         }
-
         List<String> Actions = new List<String> { "MOVE", "TAKE", "DROP", "LOOK", "OPEN", "CLOSE", "GO" };
     }
 }

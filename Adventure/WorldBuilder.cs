@@ -9,6 +9,10 @@ namespace Adventure
     class WorldBuilder
     {
         // List of rooms
+        private void NewGame()
+        {
+
+        }
 
         private void CreateRooms()
         {

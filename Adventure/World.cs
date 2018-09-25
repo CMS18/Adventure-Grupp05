@@ -8,22 +8,30 @@ namespace Adventure
 {
     class World
     {
+        List<Rooms> RoomList = new List<Rooms>()
+        {
+            new Rooms(1, "Sitting Room", "This is the sitting room"),
+            new Rooms(2, "Kitchen", "This is the kitchen"),
+            new Rooms(3, "Basement", "A spooky basement")
+        };
         
+        //Rooms SittingRoom = new Rooms(1, "Sitting Room", "The living room is old and worn, with tattered drapes hanging on the walls. " +
+        //        "To the north is a fireplace that looks like it hasn't been lit for a long time.");
+        //Rooms Kitchen = new Rooms(2, "Kitchen", "This is a kitchen");
+        //Rooms Basement = new Rooms(3, "Basement", "This is a basement");
     }
 
     class Room
     {
-        //string name;
-        //int roomId;
+        string name;
+        int roomId;
 
-        //public Room(string name, int roomId)
-        //{
-        //    this.name = name;
-        //    this.roomId = roomId;
-        //    Description();
-        //}
-
-        Rooms room1 = new Rooms(1, "Room 1", "This is the first room");
+        public Room(string name, int roomId)
+        {
+            this.name = name;
+            this.roomId = roomId;
+            Description();
+        }
 
         public void Look()
         {
@@ -32,7 +40,7 @@ namespace Adventure
 
         private string Description()
         {
-            return $"This is {room1.RoomName} with Room ID: {room1.RoomID}";
+            throw new NotImplementedException();
         }
     }
 
@@ -40,7 +48,7 @@ namespace Adventure
     {
         private Connection(int idFrom, int idTo)
         {
-            List<Item> Connections {  }
+            List<Item> connections = new List<Item>();
         }
     }
 }

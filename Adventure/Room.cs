@@ -9,9 +9,9 @@ namespace Adventure
     class Rooms
     {
         // Move genom att kolla på utgångar i rumet
-        public int RoomID { get; set; }
-        public string RoomName { get; set; }
-        public string RoomDescription { get; set; }
+        public int RoomID { get; private set; }
+        public string RoomName { get; private set; }
+        public string RoomDescription { get; private set; }
 
         public List<Item> RoomInventory { get; set; }
 

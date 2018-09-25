@@ -10,8 +10,8 @@ namespace Adventure
     {
         List<Rooms> RoomList = new List<Rooms>()
         {
-            new Rooms(1, "Sitting Room", "This is the sitting room"),
-            new Rooms(2, "Kitchen", "This is the kitchen"),
+            new Rooms(new Coord(0,0), "Sitting Room", "This is the sitting room"),
+            new Rooms(new Coord(0,0), "Kitchen", "This is the kitchen"),
             new Rooms(3, "Basement", "A spooky basement")
         };
         
@@ -21,10 +21,24 @@ namespace Adventure
         //Rooms Basement = new Rooms(3, "Basement", "This is a basement");
     }
 
+    //class Coord (int row, col)
+    class Connection
+    {
+        int[] exitA = new int[2];
+
+        int[] exitB = new int[2];
+
+        public Connection()
+        {
+            
+        }
+    }
+
     class Room
     {
         string name;
         int roomId;
+        Connection[] 
 
         public Room(string name, int roomId)
         {

@@ -11,8 +11,8 @@ namespace Adventure
         static void Main(string[] args)
         {
             // Hello world
-            WorldBuilder worldBuilder = new WorldBuilder();
-            worldBuilder.NewGame();
+            Game game = new Game();
+            game.GameLoop();
         }
     }
 }

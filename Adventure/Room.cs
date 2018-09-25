@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Adventure
 {
-
     class Room
     {
         public bool endPoint = false;
@@ -18,7 +17,7 @@ namespace Adventure
         public string roomName { get; set; }
         public string roomDescription { get; set; }
 
-        public List<Items> roomInventory = new List<Items>();
+        public List<Item> roomInventory = new List<Item>();
 
         public Room(int id, string name, string description, bool endPoint )
         {

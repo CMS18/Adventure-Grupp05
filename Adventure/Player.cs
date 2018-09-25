@@ -8,8 +8,17 @@ namespace Adventure
 {
     class Player
     {
+        public int currPosition { get; set; }
+        public string playerName { get; set; }
+        public List<Item> playerInventory;
 
-        public string Name { get; set; }
+        public Player(string name, List<Item> playerInventory, int currentPosition)
+        {
+            playerName = name;
+            this.playerInventory = playerInventory;
+            currPosition = currentPosition;
+        }
+
         //List<items> inventory = new List<items>;
         //var currPosition = 0;
 
@@ -27,11 +36,6 @@ namespace Adventure
         public void Use()
         {
             // Use item (e.g. use key on door)
-        }
-
-        public void Move()
-        {
-            //currPosition = 0; // New position
         }
 
         

@@ -8,6 +8,8 @@ namespace Adventure
 {
     class Game : World
     {
+        bool changedRoom = true;
+
         Player player;
         World world = new World();
         List<Item> playerInventory = new List<Item>();
@@ -31,7 +33,14 @@ namespace Adventure
                              where room.roomId == player.currPosition
                              select room).ToList();
 
-                Console.Write("\n" + currentRoom[0].roomDescription + "\n\n");
+                if (changedRoom)
+                {
+                    Console.Write("\n" + currentRoom[0].roomDescription + "\n\n"); // Skriver ut beskrivning av nuvarande rum
+                } else
+                {
+                    Console.WriteLine("You can't move that way\n");
+                }
+                
 
                 Parse(Console.ReadLine());
                 /*
@@ -45,7 +54,7 @@ namespace Adventure
 
         private void Parse(string input)
         {
-            List<string> actions = new List<string> { "MOVE", "TAKE", "PICKUP" , "DROP", "LOOK", "OPEN", "CLOSE", "GO", "USE", "INSPECT" };
+            List<string> actions = new List<string> { "MOVE", "TAKE", "PICKUP" , "DROP", "LOOK", "OPEN", "CLOSE", "GO", "USE", "INSPECT", "PICK" };
             List<string> items = new List<string> { "KEY" };
             List<string> directions = new List<string> { "NORTH", "EAST", "SOUTH", "WEST" };
             List<string> exits = new List<string> { "DOOR", "PAINTING", "WINDOW", "TUNNEL", "HOLE" };
@@ -64,20 +73,23 @@ namespace Adventure
             }
             else
             {
-                if(words[0] == "MOVE" || words[0] == "GO")
+                if (words[0] == "MOVE" || words[0] == "GO")
                 {
                     words.RemoveAt(0);
-                    Move(words);
-                } else if (words[0] == "TAKE" || input.ToUpper() == "PICKUP")
+                    changedRoom = Move(words);
+                } else if (words[0] == "TAKE" || input.ToUpper() == "PICKUP" || input.ToUpper() == "PICK")
                 {
                     Console.WriteLine("TEST 2");
-                } 
+                    words.RemoveAt(0);
+                    Take(words);
+                } else if (words[0] == "LOOK" || words[0] == "INSPECT") {
+                    Look(words);
+                }
             }
         }
         
-        public void Move(List<string> words)
+        public bool Move(List<string> words)
         {
-            Console.WriteLine("MOVED");
             // Kolla exitlista med currentPosition
             // Utifrån dem kollar man keywords från deras input och jämför med direction på exits.
 
@@ -85,17 +97,48 @@ namespace Adventure
                          where exit.cameFrom == player.currPosition
                          select exit).ToList();
 
-            foreach (Exit e in exits)
+            bool changeRoom = false;
+            for (int i = 0; i < exits.Count(); i++)
             {
-                foreach (string direction in words)
+                for (int j = 0; j < words.Count(); j++)
                 {
-                    if(direction.ToUpper() == e.direction.ToUpper())
+                    if (words[j].ToUpper() == exits[i].direction.ToUpper())
                     {
-                        player.currPosition = e.leadsTo;
-                        return;
+                        player.currPosition = exits[i].leadsTo;
+                        changeRoom = true;
                     }
                 }
             }
+
+            return changeRoom;
+
+            //foreach (Exit e in exits)
+            //{
+            //    foreach (string direction in words)
+            //    {
+            //        if(direction.ToUpper() == e.direction.ToUpper())
+            //        {
+            //            player.currPosition = e.leadsTo;
+            //            return;
+            //        }
+            //    }
+            //}
+        }
+
+        public void Take(List<string> words)
+        {
+            // Om ACTION är TAKE eller PICK, matcha keyword med föremål i roomInventory
+            // Ta bort föremål från roomInventory och lägg till i användarens inventory (playerInventory.Add(item)) 
+        }
+
+        public void Look(List<string> words)
+        {
+            Console.WriteLine("Test Look");
+        }
+
+        public void Use(List<string> words)
+        {
+
         }
     }
 }

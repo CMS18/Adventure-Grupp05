@@ -17,7 +17,7 @@ namespace Adventure
         public string roomName { get; set; }
         public string roomDescription { get; set; }
 
-        public List<Item> roomInventory = new List<Item>();
+        //public List<Item> roomInventory = new List<Item>();
 
         public Room(int id, string name, string description, bool endPoint )
         {
@@ -26,10 +26,5 @@ namespace Adventure
             roomDescription = description;
             this.endPoint = endPoint;
         }
-
-        //List<string> roomInventory = new List<string>;
-        
-
-
     }
 }

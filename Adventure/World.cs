@@ -23,6 +23,16 @@ namespace Adventure
             new Exit("Metal Door", 3, 2, "A heavy metal door with a grating", true, "East"),
             new Exit("Metal Door", 2, 3, "A heavy metal door with a grating", true, "West")
         };
+        
+
+        List<Item> room1Inventory = new List<Item>()
+        {
+            new Item(1, "Golden Key", "A heavy gold key inlaid with small jewels", true),
+            new Item(2, "Shortsword", "A worn shortsword", false)
+        };
+        
+
+        
 
         //Rooms SittingRoom = new Rooms(1, "Sitting Room", "The living room is old and worn, with tattered drapes hanging on the walls. " +
         //        "To the north is a fireplace that looks like it hasn't been lit for a long time.");

@@ -9,16 +9,16 @@ namespace Adventure
     class Game : World
     {
         bool changedRoom = true;
+        bool lockedDoor = false;
 
         Player player;
         World world = new World();
-        List<Item> playerInventory = new List<Item>();
+        List<Item> initPlayerInventory = new List<Item>();
 
         public void NewGame()
         {
             Console.Write("Welcome to Adventure!\nWhat is your name? ");
-            player = new Player(Console.ReadLine(), playerInventory, 2); 
-
+            player = new Player(Console.ReadLine(), initPlayerInventory, 1); 
         }
 
         public void GameLoop()
@@ -36,6 +36,9 @@ namespace Adventure
                 if (changedRoom)
                 {
                     Console.Write("\n" + currentRoom[0].roomDescription + "\n\n"); // Skriver ut beskrivning av nuvarande rum
+                } else if (lockedDoor == true)
+                {
+                    
                 } else
                 {
                     Console.WriteLine("You can't move that way\n");
@@ -69,7 +72,7 @@ namespace Adventure
 
             if (!actions.Contains(words[0])) 
             {
-                Console.WriteLine("I don't understand what you mean, please rephrase"); //Do thing
+                Console.WriteLine("I don't understand what you mean, please rephrase\n"); //Do thing
             }
             else
             {
@@ -79,15 +82,25 @@ namespace Adventure
                     changedRoom = Move(words);
                 } else if (words[0] == "TAKE" || input.ToUpper() == "PICKUP" || input.ToUpper() == "PICK")
                 {
-                    Console.WriteLine("TEST 2");
                     words.RemoveAt(0);
                     Take(words);
                 } else if (words[0] == "LOOK" || words[0] == "INSPECT") {
                     Look(words);
+                } else if (words[0] == "USE")
+                {
+                    Use(words, player.currPosition);
                 }
             }
         }
-        
+
+        private void Use(List<string> words, int currPosition)
+        {
+            //for (int i = 0; i < length; i++)
+            //{
+
+            //}
+        }
+
         public bool Move(List<string> words)
         {
             // Kolla exitlista med currentPosition
@@ -98,14 +111,27 @@ namespace Adventure
                          select exit).ToList();
 
             bool changeRoom = false;
+
+            if(words.Count() == 0)
+            {
+                Console.WriteLine("You can move in many directions");
+            }
+            
             for (int i = 0; i < exits.Count(); i++)
             {
                 for (int j = 0; j < words.Count(); j++)
                 {
                     if (words[j].ToUpper() == exits[i].direction.ToUpper())
                     {
-                        player.currPosition = exits[i].leadsTo;
-                        changeRoom = true;
+                        if (exits[i].locked == true)
+                        {
+                            Console.WriteLine("\nThe door is locked, you need a key to open it!\n");
+                            lockedDoor = true;
+                        } else 
+                        {
+                            player.currPosition = exits[i].leadsTo;
+                            changeRoom = true;
+                        }
                     }
                 }
             }
@@ -127,8 +153,29 @@ namespace Adventure
 
         public void Take(List<string> words)
         {
+            List<Item> tempItems = new List<Item>();
             // Om ACTION är TAKE eller PICK, matcha keyword med föremål i roomInventory
             // Ta bort föremål från roomInventory och lägg till i användarens inventory (playerInventory.Add(item)) 
+
+            // Om items i currentRoom = 1, kolla endast primär keyword
+            // Annars kolla även secondary
+            
+            CheckPrimaryKeyword(player.currPosition, words, ref tempItems);
+            if (tempItems.Count == 1)
+            {
+                RoomList[player.currPosition].inventory.Remove(tempItems[0]);
+                player.inventory.Add(tempItems[0]);
+                Console.WriteLine($"You picked up the {words[0]}");
+            } else if (tempItems.Count > 1)
+            {
+                CheckSecondaryKeyword(player.currPosition, words, ref tempItems);
+                player.inventory.Add(tempItems[0]);
+                RoomList[player.currPosition].inventory.Remove(tempItems[0]);
+                Console.WriteLine($"You picked up the {words[0]}");
+            } else
+            {
+                Console.WriteLine("There is no item like that to pick up");
+            }
         }
 
         public void Look(List<string> words)
@@ -139,6 +186,38 @@ namespace Adventure
         public void Use(List<string> words)
         {
 
+        }
+
+        public void CheckPrimaryKeyword(int roomId, List<string> words, ref List<Item> tempItems)
+        {
+            // Jämför input med keyword i tillgängligt item
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < RoomList[roomId].inventory.Count; j++)
+                {
+                    if (words[i].ToUpper() == RoomList[roomId].inventory[j].Keyword.ToUpper()) {
+                         tempItems.Add(RoomList[roomId].inventory[j]);
+                    } 
+                }
+            }
+        }
+
+        public void CheckSecondaryKeyword(int roomId, List<string> words, ref List<Item> tempItems)
+        {
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < tempItems.Count; j++)
+                {
+                    for (int k = 0; k < RoomList[roomId].inventory[j].SecondaryKeyword.Length; k++)
+                    {
+                        if (words[i].ToUpper() == RoomList[roomId].inventory[j].SecondaryKeyword[k].ToUpper())
+                        {
+                            tempItems.Clear();
+                            tempItems.Add(RoomList[roomId].inventory[j]);
+                        }
+                    }
+                }
+            }
         }
     }
 }

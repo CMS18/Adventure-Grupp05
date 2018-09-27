@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Adventure
 {
-    class Player
+    public class Player
     {
         public int currPosition { get; set; }
         public string playerName { get; set; }
-        public List<Item> playerInventory;
+        public List<Item> inventory;
 
         public Player(string name, List<Item> playerInventory, int currentPosition)
         {
             playerName = name;
-            this.playerInventory = playerInventory;
+            this.inventory = playerInventory;
             currPosition = currentPosition;
         }
 

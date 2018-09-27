@@ -14,8 +14,9 @@ namespace Adventure
         public string exitDescription { get; set; }
         public bool locked { get; set; }
         public string direction { get; set; }
+        public List<Item> unlockItem { get; set; }
 
-        public Exit(string name, int leads, int came, string description, bool locked, string direction)
+        public Exit(string name, int leads, int came, string description, bool locked, string direction, List<Item> unlock)
         {
             exitName = name;
             leadsTo = leads;
@@ -23,6 +24,7 @@ namespace Adventure
             exitDescription = description;
             this.locked = locked;
             this.direction = direction;
+            unlockItem = unlock;
         }
     }
 }

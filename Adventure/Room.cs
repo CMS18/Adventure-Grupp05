@@ -17,17 +17,18 @@ namespace Adventure
         public string roomName { get; set; }
         public string roomDescription { get; set; }
         public List<Item> inventory { get; set; }
+        public bool Win { get; set; }
 
         //public List<Item> roomInventory = new List<Item>();
 
-        public Room(int id, string name, string description, bool endPoint, List<Item> roomInventory)
+        public Room(int id, string name, string description, bool endPoint, List<Item> roomInventory, bool win)
         {
             roomId = id;
             roomName = name;
             roomDescription = description;
             this.endPoint = endPoint;
             this.inventory = roomInventory;
-
+            Win = win;
         }
     }
 }

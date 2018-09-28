@@ -11,9 +11,10 @@ namespace Adventure
     {
         public List<Room> RoomList = new List<Room>()
         {
-            new Room(0, "Sitting Room", "This is the sitting room", false, new List<Item>()),
-            new Room(1, "Kitchen", "This is the kitchen", false, new List<Item>()),
-            new Room(2, "Outside", "The outside", true, new List<Item>())
+            new Room(0, "Sitting Room", "You are in the sitting room.", false, new List<Item>(), false),
+            new Room(1, "Kitchen", "Around you are various pots and pans that look like they haven't been used in years. Drawers have been pulled out around you " +
+                "and their contents now scatter the floor around you.", false, new List<Item>(), false),
+            new Room(2, "Outside", "The outside", true, new List<Item>(), true)
             //new Room(4, "Basement", "A spooky basement", false),
         };
 
@@ -27,18 +28,25 @@ namespace Adventure
 
         public List<Item> room_1_Inventory = new List<Item>()
         {
-            new Item(1, "Golden Key", "A heavy gold key inlaid with small jewels", "key", new string[] {"golden", "gold"}, true),
-            new Item(2, "Shortsword", "A worn shortsword", "sword", new string[] { "short" }, false)
+            new Item(4, "Bottom piece of a key", "The bottom half of a broken key", "key", new string[] {"bottom", "half", "broken", "piece" }, true, 3, 5)
+            //new Item(1, "Golden Key", "A heavy gold key inlaid with small jewels", "key", new string[] {"golden", "gold"}, true, 0),
+
         };
 
         public List<Item> room_2_Inventory = new List<Item>()
         {
-
+            new Item(3, "Top piece of a key", "The top half of a broken key", "key", new string[] {"top", "half", "broken", "piece" }, true, 4, 5),
+            //new Item(2, "Shortsword", "A worn shortsword", "sword", new string[] { "short" }, false, 0),
         };
 
         public List<Item> room_3_Inventory = new List<Item>()
         {
 
+        };
+
+        public List<Item> FuseResults = new List<Item>()
+        {
+            new Item(5, "Golden Key", "A heavy gold key inlaid with small jewels", "key", new string[] {"golden", "gold"}, true, 0, 0)
         };
 
 
@@ -48,7 +56,7 @@ namespace Adventure
             RoomList.ElementAt(1).inventory = room_2_Inventory;
             RoomList.ElementAt(2).inventory = room_3_Inventory;
 
-            exitList[2].unlockItem.Add(room_1_Inventory[0]);
+            exitList[2].unlockItem.Add(FuseResults[0]);
         }
         
 

@@ -58,7 +58,7 @@ namespace Adventure
 
         private void Parse(string input)
         {
-            List<string> actions = new List<string> { "MOVE", "TAKE", "PICKUP" , "DROP", "LOOK", "OPEN", "CLOSE", "GO", "USE", "INSPECT", "PICK" };
+            List<string> actions = new List<string> { "LEAVE", "INVENTORY", "MOVE", "TAKE", "PICKUP" , "DROP", "LOOK", "OPEN", "CLOSE", "GO", "USE", "INSPECT", "PICK" };
             List<string> items = new List<string> { "KEY" };
             List<string> directions = new List<string> { "NORTH", "EAST", "SOUTH", "WEST" };
             List<string> exits = new List<string> { "DOOR", "PAINTING", "WINDOW", "TUNNEL", "HOLE" };
@@ -103,26 +103,10 @@ namespace Adventure
                         words.RemoveAt(0);
                         Drop(words);
                         break;
+                    case "INVENTORY":
+                        Inventory();
+                        break;
                 }
-
-                //if (words[0] == "MOVE" || words[0] == "GO")
-                //{
-                //    words.RemoveAt(0);
-                //    changedRoom = Move(words);
-                //} else if (words[0] == "TAKE" || input.ToUpper() == "PICKUP" || input.ToUpper() == "PICK")
-                //{
-                //    words.RemoveAt(0);
-                //    Take(words);
-                //} else if (words[0] == "LOOK" || words[0] == "INSPECT") {
-                //    Look(words);
-                //} else if (words[0] == "USE")
-                //{
-                //    Use(words, player.currPosition);
-                //} else if (words[0] == "DROP" || words[0] == "LEAVE")
-                //{
-                //    words.RemoveAt(0);
-                //    Drop(words);
-                //}
             }
         }
 
@@ -135,14 +119,14 @@ namespace Adventure
             // Om items i currentRoom = 1, kolla endast primär keyword
             // Annars kolla även secondary
 
-            CheckPrimaryKeyword(player.currPosition, words, ref tempItems);
-            if (tempItems.Count == 1)
+            bool checkFirst = CheckPrimaryKeywordDrop(words, ref tempItems);
+            if (player.inventory.Count == 1 && checkFirst)
             {
-                RoomList[player.currPosition].inventory.Add(tempItems[0]);
-                player.inventory.Remove(tempItems[0]);
+                RoomList[player.currPosition].inventory.Add(player.inventory[0]);
+                player.inventory.Remove(player.inventory[0]);
                 Console.WriteLine($"You dropped the {words[0].ToLower()}");
             }
-            else if (tempItems.Count > 1)
+            else if (player.inventory.Count > 1)
             {
                 CheckSecondaryKeyword(player.currPosition, words, ref tempItems);
                 player.inventory.Remove(tempItems[0]);
@@ -155,7 +139,7 @@ namespace Adventure
             }
         }
 
-        private void Use(List<string> words, int currPosition)
+        private void Use(List<string> words)
         {
             //for (int i = 0; i < length; i++)
             {
@@ -215,6 +199,16 @@ namespace Adventure
             player.inventory.Add(tempItems[0]);
             Console.WriteLine($"You picked up the {words[0].ToCapital()}");
         }
+        public void Inventory()
+        {
+            var query = (from item in player.inventory
+                         select item).ToList();
+            Console.WriteLine("INVENTORY:");
+            for (int i=0; i < query.Count(); i++)
+            {
+                Console.WriteLine($"{i + 1}) {query[i].Name}");
+            }
+        }
 
         public void Take(List<string> words)
         {
@@ -225,7 +219,7 @@ namespace Adventure
             // Om items i currentRoom = 1, kolla endast primär keyword
             // Annars kolla även secondary
             
-            CheckPrimaryKeyword(player.currPosition, words, ref tempItems);
+            CheckPrimaryKeywordTake(player.currPosition, words, ref tempItems);
             if (tempItems.Count == 1)
             {
                 InventoryAdd(words, tempItems);
@@ -250,7 +244,7 @@ namespace Adventure
             Console.WriteLine("Test Look");
         }
         
-        public void CheckPrimaryKeyword(int roomId, List<string> words, ref List<Item> tempItems) // TODO: KAN INTE DROPPA ITEMS OM ROOM INVENTORY COUNT ÄR MINDRE ÄN 1
+        public void CheckPrimaryKeywordTake(int roomId, List<string> words, ref List<Item> tempItems) // TODO: KAN INTE DROPPA ITEMS OM ROOM INVENTORY COUNT ÄR MINDRE ÄN 1
         {
             // Jämför input med keyword i tillgängligt item
             for (int i = 0; i < words.Count; i++)
@@ -262,6 +256,20 @@ namespace Adventure
                     } 
                 }
             }
+        }
+        public bool CheckPrimaryKeywordDrop(List<string> words, ref List<Item> tempItems)
+        {
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < player.inventory.Count; j++)
+                {
+                    if (words[i].ToUpper() == player.inventory[j].Keyword.ToUpper())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public void CheckSecondaryKeyword(int roomId, List<string> words, ref List<Item> tempItems)

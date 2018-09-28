@@ -42,11 +42,11 @@ namespace Adventure
                     
                 } else
                 {
-                    Console.WriteLine("You can't move that way\n");
+                    //Console.WriteLine("You can't move that way\n");
                 }
-                
 
-                Parse(Console.ReadLine());
+
+                Console.Write("> "); Parse(Console.ReadLine());
                 /*
                     Describe current room with item descriptions
                     Wait for user input
@@ -58,7 +58,7 @@ namespace Adventure
 
         private void Parse(string input)
         {
-            List<string> actions = new List<string> { "MOVE", "TAKE", "PICKUP" , "DROP", "LOOK", "OPEN", "CLOSE", "GO", "USE", "INSPECT", "PICK" };
+            List<string> actions = new List<string> { "MOVE", "TAKE", "PICKUP" , "DROP", "LOOK", "OPEN", "CLOSE", "GO", "USE", "INSPECT", "PICK", "COMMANDS", "HELP" };
             List<string> items = new List<string> { "KEY" };
             List<string> directions = new List<string> { "NORTH", "EAST", "SOUTH", "WEST" };
             List<string> exits = new List<string> { "DOOR", "PAINTING", "WINDOW", "TUNNEL", "HOLE" };
@@ -96,12 +96,17 @@ namespace Adventure
                         Look(words);
                         break;
                     case "USE":
-                        Use(words);
+                        Use(words, player.currPosition);
                         break;
                     case "DROP":
                     case "LEAVE":
                         words.RemoveAt(0);
                         Drop(words);
+                        break;
+                    case "COMMANDS":
+                    case "HELP":
+                    case "C":
+                        Commands();
                         break;
                 }
 
@@ -124,6 +129,19 @@ namespace Adventure
                 //    Drop(words);
                 //}
             }
+        }
+
+        private void Commands()
+        {
+            Console.Write("\nAvailable commands:\n" +
+                "[Move/Go] - Moves the player\n" +
+                "[Take/Pickup] - Picks up items\n" +
+                "[Look/Inspect] - Checks your environment\n" +
+                "[Use] - Uses item in inventory\n" +
+                "[Drop/Leave] - Drops item from inventory\n" +
+                "\n[Commands/Help] - Displays this list");
+
+            changedRoom = false;
         }
 
         private void Drop(List<string> words)
@@ -153,6 +171,8 @@ namespace Adventure
             {
                 Console.WriteLine($"You don't have a {words[0].ToLower()} to drop");
             }
+
+            changedRoom = false;
         }
 
         private void Use(List<string> words, int currPosition)
@@ -171,6 +191,8 @@ namespace Adventure
                     }
                 }
             }
+
+            changedRoom = false;
         }
 
         public bool Move(List<string> words)
@@ -183,10 +205,16 @@ namespace Adventure
                          select exit).ToList();
 
             bool changeRoom = false;
-
+            
             if(words.Count() == 0)
             {
-                Console.WriteLine("You can move in many directions");
+                //Console.WriteLine("You can move in many directions");
+                Console.Write("\nYou can move in the following direction(s):");
+                foreach (var exit in exits)
+                {
+                   Console.Write($" [{exit.direction}]");
+                }
+                Console.Write("\n\n");
             }
             
             for (int i = 0; i < exits.Count(); i++)
@@ -213,7 +241,8 @@ namespace Adventure
         public void InventoryAdd(List<string> words, List<Item> tempItems)
         {
             player.inventory.Add(tempItems[0]);
-            Console.WriteLine($"You picked up the {words[0].ToCapital()}");
+            Console.WriteLine($"\nYou picked up the {words[0].ToCapital()}\n");
+            changedRoom = false;
         }
 
         public void Take(List<string> words)
@@ -230,27 +259,25 @@ namespace Adventure
             {
                 InventoryAdd(words, tempItems);
                 RoomList[player.currPosition].inventory.Remove(tempItems[0]);
-                //player.inventory.Add(tempItems[0]);
-                //Console.WriteLine($"You picked up the {words[0].ToCapital()}");
             } else if (tempItems.Count > 1)
             {
                 CheckSecondaryKeyword(player.currPosition, words, ref tempItems);
                 InventoryAdd(words, tempItems);
                 RoomList[player.currPosition].inventory.Remove(tempItems[0]);
-                //player.inventory.Add(tempItems[0]);
-                //Console.WriteLine($"You picked up the {words[0].ToCapital()}");
             } else
             {
                 Console.WriteLine("There is no item like that to pick up");
+
             }
         }
 
         public void Look(List<string> words)
         {
-            Console.WriteLine("Test Look");
+            Console.Write(RoomList[player.currPosition].roomDescription);
+            changedRoom = false;
         }
         
-        public void CheckPrimaryKeyword(int roomId, List<string> words, ref List<Item> tempItems) // TODO: KAN INTE DROPPA ITEMS OM ROOM INVENTORY COUNT ÄR MINDRE ÄN 1
+        public void CheckPrimaryKeyword(int roomId, List<string> words, ref List<Item> tempItems)
         {
             // Jämför input med keyword i tillgängligt item
             for (int i = 0; i < words.Count; i++)

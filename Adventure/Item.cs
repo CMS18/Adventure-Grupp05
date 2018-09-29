@@ -8,15 +8,30 @@ namespace Adventure
 {
     public class Item
     {
-        public string Name { get; set; }
-        private string Description { get; set; }
-        public int ID { get; set; }
+        public string Name { get; private set; }
+        public string Description { get; set; }
+        public int ID { get; private set; }
+        public bool Visible { get; set; }
+        public string Keyword { get; private set; }
+        public string[] SecondaryKeyword { get; set; }
+        public int UsableWith { get; set; }
+        public int FuseResult { get; set; }
 
-        public Item(int roomID, string itemDescription, string itemName )
+        public Item(int itemID, string itemName, string itemDescription, string keyword, string[] secondaryKeyword, bool visible, int usableWith, int fuseresult )
         {
-            ID = roomID;
+            ID = itemID;
             Description = itemDescription;
             Name = itemName;
+            Keyword = keyword;
+            SecondaryKeyword = secondaryKeyword;
+            Visible = visible;
+            UsableWith = usableWith;
+            FuseResult = fuseresult;
+        }
+
+        public Item()
+        {
+
         }
 
         // Exit list

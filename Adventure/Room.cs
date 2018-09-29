@@ -6,25 +6,29 @@ using System.Threading.Tasks;
 
 namespace Adventure
 {
-    class Rooms
+    class Room
     {
+        public bool endPoint = false;
+
         // Move genom att kolla på utgångar i rumet
-        public int RoomID { get; set; }
-        public string RoomName { get; set; }
-        public string RoomDescription { get; set; }
+        public int roomRow { get; set; }
+        public int roomCol { get; set; }
+        public int roomId { get; set; }
+        public string roomName { get; set; }
+        public string roomDescription { get; set; }
+        public List<Item> inventory { get; set; }
+        public bool Win { get; set; }
 
-        public List<Item> RoomInventory { get; set; }
+        //public List<Item> roomInventory = new List<Item>();
 
-        public Rooms(int id, string name, string description )
+        public Room(int id, string name, string description, bool endPoint, List<Item> roomInventory, bool win)
         {
-            RoomID = id;
-            RoomName = name;
-            RoomDescription = description;
+            roomId = id;
+            roomName = name;
+            roomDescription = description;
+            this.endPoint = endPoint;
+            this.inventory = roomInventory;
+            Win = win;
         }
-
-        //List<string> roomInventory = new List<string>;
-        
-
-
     }
 }

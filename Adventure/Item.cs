@@ -28,18 +28,5 @@ namespace Adventure
             UsableWith = usableWith;
             FuseResult = fuseresult;
         }
-
-        public Item()
-        {
-
-        }
-
-        // Exit list
     }
-
-
-    //class Key : Item
-    //{
-
-    //}
 }

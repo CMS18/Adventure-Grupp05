@@ -19,8 +19,6 @@ namespace Adventure
         public List<Item> inventory { get; set; }
         public bool Win { get; set; }
 
-        //public List<Item> roomInventory = new List<Item>();
-
         public Room(int id, string name, string description, bool endPoint, List<Item> roomInventory, bool win)
         {
             roomId = id;

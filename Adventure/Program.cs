@@ -10,7 +10,6 @@ namespace Adventure
     {
         static void Main(string[] args)
         {
-            // Hello world
             Game game = new Game();
             game.GameLoop();
         }

@@ -19,6 +19,7 @@ namespace Adventure
 
         Player player;
         World world = new World();
+        KeywordCheck keywordCheck = new KeywordCheck();
         List<Item> initPlayerInventory = new List<Item>();
 
         public void NewGame()
@@ -27,8 +28,9 @@ namespace Adventure
             player = new Player(Console.ReadLine(), initPlayerInventory, 1);
             Console.Write($"\nWelcome {player.playerName}!\n");
 
-            Console.Write("\nYou wake up in a small abandoned house. A sudden blinding light followed by a rumbling thunder startles you.\n" +
-                "The lightning illuminates the walls around you, revealing the decaying paint and rotting wood lining the walls.\n\n");
+            Console.Write("\nYou find yourself in a small abandoned house. A sudden blinding light followed by a rumbling thunder startles\n" +
+                "you from your slumber. The lightning illuminates the walls around you, revealing the decaying paint and rotting\n" +
+                "wood lining the walls.\n");
         }
 
         public void GameLoop()
@@ -55,15 +57,11 @@ namespace Adventure
                 
                 Console.Write("> "); Parse(Console.ReadLine());
             }
-            Console.Clear();
-            Console.WriteLine("You escaped and have won the game!");
+            Console.WriteLine("\nCongratulations! You escaped and have won the game!\n");
         }
 
         private void Parse(string input)
         {
-            
-
-
             List<string> words = new List<string>();
             foreach (string word in input.Split(' '))
             {
@@ -74,6 +72,7 @@ namespace Adventure
             if (!actions.Contains(words[0])) 
             {
                 Console.WriteLine("\nI don't understand what you mean, please rephrase\n"); //Do thing
+                changedRoom = false;
             }
             else
             {
@@ -91,8 +90,11 @@ namespace Adventure
                         Take(words);
                         break;
                     case "LOOK":
-                    case "INSPECT":
                         Look(words);
+                        break;
+                    case "INSPECT":
+                        words.RemoveAt(0);
+                        Inspect(words);
                         break;
                     case "USE":
                         words.RemoveAt(0);
@@ -113,18 +115,23 @@ namespace Adventure
                 }
             }
         }
-
         private void Commands()
         {
             Console.Write("\nAvailable commands:\n\n" +
-                "[Move/Go] - Moves the player\n" +
-                "[Take/Pickup] - Picks up items\n" +
-                "[Look/Inspect] - Checks your environment\n" +
-                "[Use] - Uses item in inventory\n" +
-                "[Drop/Leave] - Drops item from inventory\n" +
-                "\n[Commands/Help] - Displays this list\n\n");
+                "[Move/Go]\t Moves the player\n" +
+                "[Take/Pickup]\t Picks up items\n" +
+                "[Look/Inspect]\t Checks your environment\n" +
+                "[Use]\t\t Uses item in inventory\n" +
+                "[Drop/Leave]\t Drops item from inventory\n" +
+                "\n[Commands/Help]\t Displays this list\n\n");
 
             changedRoom = false;
+        }
+
+        public void inventoryAdd(List<string> words)
+        {
+            player.inventory.Remove(player.inventory[0]);
+            Console.WriteLine($"\nYou dropped the {words[0].ToLower()}\n");
         }
 
         private void Drop(List<string> words)
@@ -136,19 +143,17 @@ namespace Adventure
             // Om items i currentRoom = 1, kolla endast primär keyword
             // Annars kolla även secondary
 
-            CheckPrimaryKeywordDrop(words, ref tempItems);
+            keywordCheck.CheckPrimaryKeyword(words, ref tempItems, player.inventory);
             if (player.inventory.Count == 1)
             {
                 RoomList[player.currPosition].inventory.Add(player.inventory[0]);
-                player.inventory.Remove(player.inventory[0]);
-                Console.WriteLine($"You dropped the {words[0].ToLower()}");
+                inventoryAdd(words);
             }
             else if (player.inventory.Count > 1)
             {
-                CheckSecondaryKeywordDrop(player.currPosition, words, ref tempItems);
-                player.inventory.Remove(tempItems[0]);
+                keywordCheck.CheckSecondaryKeywordDrop(player.currPosition, words, ref tempItems, player.inventory);
+                inventoryAdd(words);
                 RoomList[player.currPosition].inventory.Add(tempItems[0]);
-                Console.WriteLine($"You dropped the {words[0].ToLower()}");
             }
             else
             {
@@ -160,6 +165,10 @@ namespace Adventure
 
         private void Use(List<string> words)
         {
+            if(words.Count() == 0)
+            {
+                Console.WriteLine("\nPlease specify what you want to use\n");
+            }
             for (int i = 0; i < words.Count(); i++)
             {
                 if (words[i].ToUpper().Equals("WITH"))
@@ -174,7 +183,7 @@ namespace Adventure
 
         private void UseWith(List<string> words)
         {
-            bool valid_1 = false;
+            bool valid_1 = false; // Checks what the player wants to do
             bool valid_2 = false;
             for (int i = 0; i < words.Count; i++)
             {
@@ -188,12 +197,12 @@ namespace Adventure
                     valid_2 = true;
                     
                 }
-               
             }
 
             if(valid_1 && valid_2)
             {
                 UnlockDoor();
+                return;
             }
 
             var usable = (from item in player.inventory
@@ -209,8 +218,6 @@ namespace Adventure
                     }
                 }
             }
-
-
         }
 
         private void UnlockDoor()
@@ -219,33 +226,37 @@ namespace Adventure
                          where exit.locked == true && exit.cameFrom == player.currPosition
                          select exit).ToList();
 
+            bool foundExit = false;
+
             List<Item> invent;
 
-            //var test = (from item in player.inventory
-            //            where item.ID.Equals(exits[0].unlockItem[0].ID)
-            //            select item).ToList();
-                        
-            if(player.inventory.Count > 0)
+            if(exits.Count() > 0)
             {
-                invent = /*(from item in player.inventory
-                          where item.Equals(exits[0].unlockItem[0])
-                          select item).ToList();*/
-                        (from item in player.inventory
+                foundExit = true;
+            }
+            
+            if(player.inventory.Count > 0 && foundExit)
+            {
+                bool foundItem = false;
+                invent = (from item in player.inventory
                          where item.ID.Equals(exits[0].unlockItem[0].ID)
                          select item).ToList();
 
-                if (exits.Count == 1)
+                if (invent.Count() > 0)
+                {
+                    foundItem = true;
+                } else
+                {
+                    Console.Write("\nYou don't have the right item to unlock this door\n\n");
+                }
+
+                
+                if (exits.Count == 1 && foundItem)
                 {
                     if (exits[0].unlockItem[0].Equals(invent[0]))
                     {
                         exits[0].locked = false;
-                        //for (int i = 0; i < exitList.Count; i++)
-                        //{
-                        //    if (exitList[i].unlockItem[0] == exits[0].unlockItem[0])
-                        //    {
-                        //        exitList[i].locked = false;
-                        //    }
-                        //}
+                        Console.Write($"\nYou unlocked the { exits[0].exitName }!\n\n");
                     } else
                     {
                         Console.WriteLine("No items like that");
@@ -253,7 +264,7 @@ namespace Adventure
                 }
             } else
             {
-                Console.WriteLine("TEST");
+                Console.WriteLine("\nThere is nothing to unlock in here\n");
             }
         }
 
@@ -268,6 +279,7 @@ namespace Adventure
                 player.inventory.Add(toAdd[0]);
                 player.inventory.Remove(partA);
                 player.inventory.Remove(partB);
+                Console.Write($"\nYou created a new item! You made a {toAdd[0].Name}!\n\n");
             }
         }
 
@@ -333,115 +345,189 @@ namespace Adventure
 
         public void Take(List<string> words)
         {
+            changedRoom = false;
+            if (words.Count == 0)
+            {
+                Console.WriteLine("\nWhat do you want to pick up?\n");
+                return;
+            }
+
             List<Item> tempItems = new List<Item>();
             // Om ACTION är TAKE eller PICK, matcha keyword med föremål i roomInventory
             // Ta bort föremål från roomInventory och lägg till i användarens inventory (playerInventory.Add(item)) 
 
             // Om items i currentRoom = 1, kolla endast primär keyword
             // Annars kolla även secondary
-            
-            CheckPrimaryKeywordTake(player.currPosition, words, ref tempItems);
+
+            keywordCheck.CheckPrimaryKeywordTake(player.currPosition, words, ref tempItems);
             if (tempItems.Count == 1)
             {
                 InventoryAdd(words, tempItems);
                 RoomList[player.currPosition].inventory.Remove(tempItems[0]);
             } else if (tempItems.Count > 1)
             {
-                CheckSecondaryKeywordTake(player.currPosition, words, ref tempItems);
+                keywordCheck.CheckSecondaryKeywordTake(player.currPosition, words, ref tempItems);
                 InventoryAdd(words, tempItems);
                 RoomList[player.currPosition].inventory.Remove(tempItems[0]);
             } else
             {
-                Console.WriteLine("There is no item like that to pick up");
-
+                Console.WriteLine("\nThere is no item like that to pick up\n");
             }
         }
 
         public void Look(List<string> words)
         {
-            if(words.Contains("AT")) 
-            {
-                for (int i = 0; i < words.Count(); i++)
-                {
-                    for (int j = 0; j < exitList[player.currPosition].direction.Count(); j++)
-                    {
-                        if (words[i] == exitList[player.currPosition].direction)
-                        {
-                            Console.WriteLine("TEST TEST TEST");
-                        }
-                    }
-                }
-            }
-            Console.Write($"\n{RoomList[player.currPosition].roomDescription} ");
-            for (int i = 0; i < RoomList[player.currPosition].inventory.Count(); i++)
-            {
-                Console.Write($"{ RoomList[player.currPosition].inventory[i].Description } ");
-            }
-            Console.Write("\n\n");
             changedRoom = false;
-        }
-        
-        public void CheckPrimaryKeywordTake(int roomId, List<string> words, ref List<Item> tempItems)
-        {
-            // Jämför input med keyword i tillgängligt item
-            for (int i = 0; i < words.Count; i++)
+            Console.Write($"\n{RoomList[player.currPosition].roomDescription} ");
+            if (RoomList[player.currPosition].inventory.Count() > 0)
             {
-                for (int j = 0; j < RoomList[roomId].inventory.Count; j++)
+                Console.Write("\n\nItems in your vicinity\n\n");
+                for (int i = 0; i < RoomList[player.currPosition].inventory.Count(); i++)
                 {
-                    if (words[i].ToUpper() == RoomList[roomId].inventory[j].Keyword.ToUpper()) {
-                         tempItems.Add(RoomList[roomId].inventory[j]);
-                    } 
+                    Console.WriteLine($"[{i + 1}] { RoomList[player.currPosition].inventory[i].Name } ");
                 }
             }
+            Console.Write("\n");
         }
-        public void CheckPrimaryKeywordDrop(List<string> words, ref List<Item> tempItems)
+
+        private void Inspect(List<string> words)
         {
-            for (int i = 0; i < words.Count; i++)
+            List<Item> tempItems = new List<Item>();
+            List<Item> secondaryList = new List<Item>();
+            List<string> usedKeyword = new List<string>();
+            changedRoom = false;
+
+
+            if (words.Count > 0)
             {
-                for (int j = 0; j < player.inventory.Count; j++)
+                keywordCheck.CheckPrimaryKeyword(words, ref tempItems, player.inventory);
+                if (tempItems.Count == 0)
                 {
-                    if (words[i].ToUpper() == player.inventory[j].Keyword.ToUpper())
+                    Console.WriteLine("\nYou don't have an item like that\n");
+                }
+                else if (tempItems.Count() == 1)
+                {
+                    Console.WriteLine($"\n{ tempItems[0].Description }\n");
+                }
+                else if (tempItems.Count() > 1)
+                {
+                    keywordCheck.CheckSecondaryKeyword(words, ref tempItems, ref secondaryList, ref usedKeyword);
+
+                    if (secondaryList.Count() == 0)
                     {
-                        tempItems.Add(player.inventory[j]);
+                        Console.WriteLine($"\nYou have { tempItems.Count() } { tempItems[0].Keyword }s, which one do you want to look at?\n");
+                        return;
+                    }
+                    else if (secondaryList.Count() == 1)
+                    {
+                        Console.WriteLine($"\n{ secondaryList[0].Description }\n");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"\nYou have { secondaryList.Count() } { usedKeyword[0].ToString() } { tempItems[0].Keyword }s, which one do you want to look at?\n");
                     }
                 }
+            } else
+            {
+                Console.WriteLine("\nWhat do you want to inspect?\n");
             }
         }
 
-        public void CheckSecondaryKeywordTake(int roomId, List<string> words, ref List<Item> tempItems)
-        {
-            for (int i = 0; i < words.Count; i++)
-            {
-                for (int j = 0; j < tempItems.Count; j++)
-                {
-                    for (int k = 0; k < RoomList[roomId].inventory[j].SecondaryKeyword.Length; k++)
-                    {
-                        if (words[i].ToUpper() == RoomList[roomId].inventory[j].SecondaryKeyword[k].ToUpper())
-                        {
-                            tempItems.Clear();
-                            tempItems.Add(RoomList[roomId].inventory[j]);
-                        }
-                    }
-                }
-            }
-        }
+        //public void CheckPrimaryKeywordTake(int roomId, List<string> words, ref List<Item> tempItems)
+        //{
+        //    // Jämför input med keyword i tillgängligt item
+        //    for (int i = 0; i < words.Count; i++)
+        //    {
+        //        for (int j = 0; j < RoomList[roomId].inventory.Count; j++)
+        //        {
+        //            if (words[i].ToUpper() == RoomList[roomId].inventory[j].Keyword.ToUpper())
+        //            {
+        //                tempItems.Add(RoomList[roomId].inventory[j]);
+        //            }
+        //        }
+        //    }
+        //}
 
-        public void CheckSecondaryKeywordDrop(int roomId, List<string> words, ref List<Item> tempItems)
-        {
-            for (int i = 0; i < words.Count; i++)
-            {
-                for (int j = 0; j < tempItems.Count; j++)
-                {
-                    for (int k = 0; k < player.inventory[j].SecondaryKeyword.Length; k++)
-                    {
-                        if (words[i].ToUpper() == player.inventory[j].SecondaryKeyword[k].ToUpper())
-                        {
-                            tempItems.RemoveAt(k);
-                            tempItems.Add(RoomList[roomId].inventory[j]);
-                        }
-                    }
-                }
-            }
-        }
+        //public void CheckPrimaryKeywordDrop(List<string> words, ref List<Item> tempItems)
+        //{
+        //    for (int i = 0; i < words.Count; i++)
+        //    {
+        //        for (int j = 0; j < player.inventory.Count; j++)
+        //        {
+        //            if (words[i].ToUpper() == player.inventory[j].Keyword.ToUpper())
+        //            {
+        //                tempItems.Add(player.inventory[j]);
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public void CheckSecondaryKeywordTake(int roomId, List<string> words, ref List<Item> tempItems)
+        //{
+        //    for (int i = 0; i < words.Count; i++)
+        //    {
+        //        for (int j = 0; j < tempItems.Count; j++)
+        //        {
+        //            for (int k = 0; k < RoomList[roomId].inventory[j].SecondaryKeyword.Length; k++)
+        //            {
+        //                if (words[i].ToUpper() == RoomList[roomId].inventory[j].SecondaryKeyword[k].ToUpper())
+        //                {
+        //                    tempItems.Clear();
+        //                    tempItems.Add(RoomList[roomId].inventory[j]);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public void CheckSecondaryKeywordDrop(int roomId, List<string> words, ref List<Item> tempItems)
+        //{
+        //    for (int i = 0; i < words.Count; i++)
+        //    {
+        //        for (int j = 0; j < tempItems.Count; j++)
+        //        {
+        //            for (int k = 0; k < player.inventory[j].SecondaryKeyword.Length; k++)
+        //            {
+        //                if (words[i].ToUpper() == player.inventory[j].SecondaryKeyword[k].ToUpper())
+        //                {
+        //                    tempItems.RemoveAt(k);
+        //                    tempItems.Add(RoomList[roomId].inventory[j]);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public void CheckPrimaryKeyword(List<string> words, ref List<Item> tempItems)
+        //{
+        //    for (int i = 0; i < words.Count; i++)
+        //    {
+        //        for (int j = 0; j < player.inventory.Count; j++)
+        //        {
+        //            if (words[i].ToUpper() == player.inventory[j].Keyword.ToUpper())
+        //            {
+        //                tempItems.Add(player.inventory[j]);
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public void CheckSecondaryKeyword(List<string> words, ref List<Item> tempItems, ref List<Item> secondaryList, ref List<string> usedKeyword)
+        //{
+        //    for (int i = 0; i < words.Count; i++)
+        //    {
+        //        for (int j = 0; j < tempItems.Count; j++)
+        //        {
+        //            for (int k = 0; k < tempItems[j].SecondaryKeyword.Length; k++)
+        //            {
+        //                if (words[i].ToUpper() == tempItems[j].SecondaryKeyword[k].ToUpper())
+        //                {
+        //                    secondaryList.Add(tempItems[j]);
+        //                    usedKeyword.Add(words[i].ToLower());
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

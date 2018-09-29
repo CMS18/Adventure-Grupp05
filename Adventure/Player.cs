@@ -17,27 +17,6 @@ namespace Adventure
             playerName = name;
             this.inventory = playerInventory;
             currPosition = currentPosition;
-        }
-
-        //List<items> inventory = new List<items>;
-        //var currPosition = 0;
-
-        public void PickupItem()
-        {
-            
-        }
-
-        public void Inventory()
-        {
-            // Show inventory
-            //List<string> PlayerInventory = new List<string> { "Key", "Sword" };
-        }
-
-        public void Use()
-        {
-            // Use item (e.g. use key on door)
-        }
-
-        
+        }        
     }
 }

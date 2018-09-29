@@ -314,7 +314,7 @@ namespace Adventure
         {
             var query = (from item in player.inventory
                          select item).ToList();
-            Console.WriteLine("INVENTORY:");
+            Console.WriteLine("\nINVENTORY:");
             for (int i=0; i < query.Count(); i++)
             {
                 Console.WriteLine($"{i + 1}) {query[i].Name}");

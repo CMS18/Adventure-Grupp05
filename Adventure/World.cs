@@ -28,14 +28,14 @@ namespace Adventure
 
         public List<Item> room_1_Inventory = new List<Item>()
         {
-            new Item(4, "Bottom piece of a key", "The bottom half of a broken key", "key", new string[] {"bottom", "half", "broken", "piece" }, true, 3, 5)
+            new Item(4, "Bottom piece of a key", "You see the the bottom half of a broken key, lying on the floor", "key", new string[] {"bottom", "half", "broken", "piece" }, true, 3, 5)
             //new Item(1, "Golden Key", "A heavy gold key inlaid with small jewels", "key", new string[] {"golden", "gold"}, true, 0),
 
         };
 
         public List<Item> room_2_Inventory = new List<Item>()
         {
-            new Item(3, "Top piece of a key", "The top half of a broken key", "key", new string[] {"top", "half", "broken", "piece" }, true, 4, 5),
+            new Item(3, "Top piece of a key", "You see the top half of a broken key, lying on the floor", "key", new string[] {"top", "half", "broken", "piece" }, true, 4, 5),
             //new Item(2, "Shortsword", "A worn shortsword", "sword", new string[] { "short" }, false, 0),
         };
 

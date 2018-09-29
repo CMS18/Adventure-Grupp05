@@ -73,7 +73,7 @@ namespace Adventure
 
             if (!actions.Contains(words[0])) 
             {
-                Console.WriteLine("I don't understand what you mean, please rephrase\n\n"); //Do thing
+                Console.WriteLine("\nI don't understand what you mean, please rephrase\n"); //Do thing
             }
             else
             {
@@ -116,13 +116,13 @@ namespace Adventure
 
         private void Commands()
         {
-            Console.Write("\nAvailable commands:\n" +
+            Console.Write("\nAvailable commands:\n\n" +
                 "[Move/Go] - Moves the player\n" +
                 "[Take/Pickup] - Picks up items\n" +
                 "[Look/Inspect] - Checks your environment\n" +
                 "[Use] - Uses item in inventory\n" +
                 "[Drop/Leave] - Drops item from inventory\n" +
-                "\n[Commands/Help] - Displays this list");
+                "\n[Commands/Help] - Displays this list\n\n");
 
             changedRoom = false;
         }
@@ -221,25 +221,34 @@ namespace Adventure
 
             List<Item> invent;
 
-            
+            //var test = (from item in player.inventory
+            //            where item.ID.Equals(exits[0].unlockItem[0].ID)
+            //            select item).ToList();
+                        
             if(player.inventory.Count > 0)
             {
-                invent = (from item in player.inventory
-                          where item.Equals(exits[0].unlockItem)
-                          select item).ToList();
+                invent = /*(from item in player.inventory
+                          where item.Equals(exits[0].unlockItem[0])
+                          select item).ToList();*/
+                        (from item in player.inventory
+                         where item.ID.Equals(exits[0].unlockItem[0].ID)
+                         select item).ToList();
 
                 if (exits.Count == 1)
                 {
-                    if (exits[0].Equals(invent[0]))
+                    if (exits[0].unlockItem[0].Equals(invent[0]))
                     {
-                        for (int i = 0; i < exitList.Count; i++)
-                        {
-                            if (exitList[i].unlockItem[0].ID == exits[0].unlockItem[0].ID)
-                            {
-                                exitList[i].locked = false;
-                            }
-                        }
-
+                        exits[0].locked = false;
+                        //for (int i = 0; i < exitList.Count; i++)
+                        //{
+                        //    if (exitList[i].unlockItem[0] == exits[0].unlockItem[0])
+                        //    {
+                        //        exitList[i].locked = false;
+                        //    }
+                        //}
+                    } else
+                    {
+                        Console.WriteLine("No items like that");
                     }
                 }
             } else
@@ -314,11 +323,12 @@ namespace Adventure
         {
             var query = (from item in player.inventory
                          select item).ToList();
-            Console.WriteLine("INVENTORY:");
+            Console.Write("\n[INVENTORY]:\n\n");
             for (int i=0; i < query.Count(); i++)
             {
-                Console.WriteLine($"{i + 1}) {query[i].Name}");
+                Console.WriteLine($"[{i + 1}] {query[i].Name}");
             }
+            Console.WriteLine();
         }
 
         public void Take(List<string> words)

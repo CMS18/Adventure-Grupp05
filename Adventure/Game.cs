@@ -19,7 +19,14 @@ namespace Adventure
         public void NewGame()
         {
             Console.Write("Welcome to Adventure!\nWhat is your name? ");
-            player = new Player(Console.ReadLine(), initPlayerInventory, 1); 
+            player = new Player(Console.ReadLine(), initPlayerInventory, 2); 
+        }
+
+        public void HackerMethod()
+        {
+            // UNDER CONSTRUCTION
+            string[] code = { "UP", "UP", "AND", "AWAY" };
+            // UNDER CONSTRUCTION
         }
 
         public void GameLoop()
@@ -58,7 +65,7 @@ namespace Adventure
 
         private void Parse(string input)
         {
-            List<string> actions = new List<string> { "MOVE", "TAKE", "PICKUP" , "DROP", "LOOK", "OPEN", "CLOSE", "GO", "USE", "INSPECT", "PICK", "COMMANDS", "HELP" };
+            List<string> actions = new List<string> { "LEAVE", "INVENTORY", "MOVE", "TAKE", "PICKUP" , "DROP", "LOOK", "OPEN", "CLOSE", "GO", "USE", "INSPECT", "PICK", "COMMANDS", "HELP" };
             List<string> items = new List<string> { "KEY" };
             List<string> directions = new List<string> { "NORTH", "EAST", "SOUTH", "WEST" };
             List<string> exits = new List<string> { "DOOR", "PAINTING", "WINDOW", "TUNNEL", "HOLE" };
@@ -96,7 +103,7 @@ namespace Adventure
                         Look(words);
                         break;
                     case "USE":
-                        Use(words, player.currPosition);
+                        Use(words);
                         break;
                     case "DROP":
                     case "LEAVE":
@@ -105,7 +112,6 @@ namespace Adventure
                         break;
                     case "COMMANDS":
                     case "HELP":
-                    case "C":
                         Commands();
                         break;
                     case "INVENTORY":

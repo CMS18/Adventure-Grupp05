@@ -23,7 +23,7 @@ namespace Adventure
         //    Description();
         //}
 
-        Rooms room1 = new Rooms(1, "Room 1", "This is the first room");
+        
 
         public void Look()
         {

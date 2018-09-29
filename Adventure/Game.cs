@@ -28,6 +28,10 @@ namespace Adventure
             player = new Player(Console.ReadLine(), initPlayerInventory, 1);
             Console.Write($"\nWelcome {player.playerName}!\n");
 
+            string str = "\nYou wake up in a small abandoned house. A sudden blinding light followed by a rumbling thunder startles you." +
+                "The lightning illuminates the walls around you, revealing the decaying paint and rotting wood lining the walls.";
+
+            StringOutputFormatter(str, 1, 2);
             Console.Write("\nYou find yourself in a small abandoned house. A sudden blinding light followed by a rumbling thunder startles\n" +
                 "you from your slumber. The lightning illuminates the walls around you, revealing the decaying paint and rotting\n" +
                 "wood lining the walls.\n");
@@ -179,6 +183,45 @@ namespace Adventure
             }
 
             changedRoom = false;
+        }
+
+        public void StringOutputFormatter(string str, int nrOfNewLinesBefore, int nrOfNewLinesAfter)
+        {
+            const int textWidth = 64;
+
+            string result = "";
+            string lineBuild = "";
+
+            for (int i = 0; i < nrOfNewLinesBefore; i++)
+            {
+                result += "\n";
+            }
+
+            string[] words = str.Split(' ');
+            for (int i=0; i<words.Length; i++)
+            {
+                int prevLen = lineBuild.Length;
+                lineBuild += words[i];
+                if (lineBuild.Length > textWidth)
+                {
+                    lineBuild = lineBuild.Substring(0, prevLen);
+                    i--;
+                    result += lineBuild+"\n";
+                    lineBuild = "";
+                }
+                else
+                {
+                    lineBuild += " ";
+                }
+            }
+            
+            for (int i=0; i< nrOfNewLinesAfter; i++)
+            {
+                result += "\n";
+            }
+
+            // Output
+            Console.WriteLine(result);
         }
 
         private void UseWith(List<string> words)
@@ -335,7 +378,7 @@ namespace Adventure
         {
             var query = (from item in player.inventory
                          select item).ToList();
-            Console.Write("\n[INVENTORY]:\n\n");
+            Console.Write("\n\n[INVENTORY]:\n");
             for (int i=0; i < query.Count(); i++)
             {
                 Console.WriteLine($"[{i + 1}] {query[i].Name}");

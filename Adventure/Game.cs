@@ -257,7 +257,7 @@ namespace Adventure
             // Om items i currentRoom = 1, kolla endast primär keyword
             // Annars kolla även secondary
 
-            keywordCheck.CheckPrimaryKeyword(words, ref tempItems, player.inventory);
+            CheckPrimaryKeyword(words, ref tempItems);
             if (player.inventory.Count == 1)
             {
                 RoomList[player.currPosition].inventory.Add(player.inventory[0]);
@@ -265,7 +265,7 @@ namespace Adventure
             }
             else if (player.inventory.Count > 1)
             {
-                keywordCheck.CheckSecondaryKeywordDrop(player.currPosition, words, ref tempItems, player.inventory);
+                CheckSecondaryKeywordDrop(player.currPosition, words, ref tempItems);
                 InventoryDrop(words);
                 RoomList[player.currPosition].inventory.Add(tempItems[0]);
             }
@@ -285,7 +285,7 @@ namespace Adventure
             }
             for (int i = 0; i < words.Count(); i++)
             {
-                if (words[i].ToUpper().Equals("WITH"))
+                if (words[i].ToUpper().Equals("WITH") || words[i].ToUpper().Equals("ON"))
                 {
                     words.RemoveAt(i);
                     UseWith(words);
@@ -311,7 +311,7 @@ namespace Adventure
             // Om items i currentRoom = 1, kolla endast primär keyword
             // Annars kolla även secondary
 
-            keywordCheck.CheckPrimaryKeywordTake(player.currPosition, words, ref tempItems);
+            CheckPrimaryKeywordTake(player.currPosition, words, ref tempItems);
             if (tempItems.Count == 1)
             {
                 InventoryAdd(words, tempItems);
@@ -319,7 +319,7 @@ namespace Adventure
             }
             else if (tempItems.Count > 1)
             {
-                keywordCheck.CheckSecondaryKeywordTake(player.currPosition, words, ref tempItems);
+                CheckSecondaryKeywordTake(player.currPosition, words, ref tempItems);
                 InventoryAdd(words, tempItems);
                 RoomList[player.currPosition].inventory.Remove(tempItems[0]);
             }
@@ -355,7 +355,7 @@ namespace Adventure
 
             if (words.Count > 0)
             {
-                keywordCheck.CheckPrimaryKeyword(words, ref tempItems, player.inventory);
+                CheckPrimaryKeyword(words, ref tempItems);
                 if (tempItems.Count == 0)
                 {
                     Console.WriteLine("\nYou don't have an item like that\n");
@@ -366,7 +366,7 @@ namespace Adventure
                 }
                 else if (tempItems.Count() > 1)
                 {
-                    keywordCheck.CheckSecondaryKeyword(words, ref tempItems, ref secondaryList, ref usedKeyword);
+                    CheckSecondaryKeyword(words, ref tempItems, ref secondaryList, ref usedKeyword);
 
                     if (secondaryList.Count() == 0)
                     {
@@ -516,6 +516,101 @@ namespace Adventure
                 Console.WriteLine($"[{i + 1}] {query[i].Name}");
             }
             Console.WriteLine();
+        }
+        #endregion
+
+        #region Keywords
+        public void CheckPrimaryKeywordTake(int roomId, List<string> words, ref List<Item> tempItems)
+        {
+            // Jämför input med keyword i tillgängligt item
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < RoomList[roomId].inventory.Count; j++)
+                {
+                    if (words[i].ToUpper() == RoomList[roomId].inventory[j].Keyword.ToUpper())
+                    {
+                        tempItems.Add(RoomList[roomId].inventory[j]);
+                    }
+                }
+            }
+        }
+        public void CheckPrimaryKeywordDrop(List<string> words, ref List<Item> tempItems)
+        {
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < player.inventory.Count; j++)
+                {
+                    if (words[i].ToUpper() == player.inventory[j].Keyword.ToUpper())
+                    {
+                        tempItems.Add(player.inventory[j]);
+                    }
+                }
+            }
+        }
+        public void CheckSecondaryKeywordTake(int roomId, List<string> words, ref List<Item> tempItems)
+        {
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < tempItems.Count; j++)
+                {
+                    for (int k = 0; k < RoomList[roomId].inventory[j].SecondaryKeyword.Length; k++)
+                    {
+                        if (words[i].ToUpper() == RoomList[roomId].inventory[j].SecondaryKeyword[k].ToUpper())
+                        {
+                            tempItems.Clear();
+                            tempItems.Add(RoomList[roomId].inventory[j]);
+                        }
+                    }
+                }
+            }
+        }
+        public void CheckSecondaryKeywordDrop(int roomId, List<string> words, ref List<Item> tempItems)
+        {
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < tempItems.Count; j++)
+                {
+                    for (int k = 0; k < player.inventory[j].SecondaryKeyword.Length; k++)
+                    {
+                        if (words[i].ToUpper() == player.inventory[j].SecondaryKeyword[k].ToUpper())
+                        {
+                            tempItems.RemoveAt(k);
+                            tempItems.Add(RoomList[roomId].inventory[j]);
+                        }
+                    }
+                }
+            }
+        }
+        public void CheckPrimaryKeyword(List<string> words, ref List<Item> tempItems)
+        {
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < player.inventory.Count; j++)
+                {
+                    if (words[i].ToUpper() == player.inventory[j].Keyword.ToUpper())
+                    {
+                        tempItems.Add(player.inventory[j]);
+                    }
+                }
+            }
+        }
+        public void CheckSecondaryKeyword(List<string> words, ref List<Item> tempItems, ref List<Item> secondaryList, ref List<string> usedKeyword)
+        {
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < tempItems.Count; j++)
+                {
+                    for (int k = 0; k < tempItems[j].SecondaryKeyword.Length; k++)
+                    {
+                        if (words[i].ToUpper() == tempItems[j].SecondaryKeyword[k].ToUpper())
+                        {
+                            
+                            secondaryList.Add(tempItems[j]);
+                            usedKeyword.Add(words[i].ToLower());
+                        }
+                    }
+                }
+            }
         }
         #endregion
     }

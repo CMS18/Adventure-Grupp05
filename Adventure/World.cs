@@ -11,13 +11,13 @@ namespace Adventure
     {
         public List<Room> RoomList = new List<Room>()
         {
-            new Room(0, "Sitting Room", $"You find yourself in a sizeable room with a large table in the center surrounded by heavy wooden chairs.\n" +
-                        "Along the walls are multiple old looking oil paintings of people you don't recognize\n\n" +
+            new Room(0, "Sitting Room", $"You find yourself in a sizeable room with a large rectangular table in the center. The table is surrounded by heavy wooden chairs." +
+                        "Along the walls are multiple old looking oil paintings of sinister looking people you don't recognize" +
                         "The only window in the room has been barred with a metal grating. It's night time outside", false, new List<Item>(), false),
 
-            new Room(1, "Kitchen", "Around you are various pots and pans that look like they haven't been used in years. \nDrawers have been pulled" +
+            new Room(1, "Kitchen", "Around you are various pots and pans that look like they haven't been used in years. Drawers have been pulled " +
                 "out around you and their contents now scatter the floor around you." +
-                "\n\nTo your west you see a sturdy wooden door and to the east there's a heavy metal with a large padlock on it", false, new List<Item>(), false),
+                "To your west you see a sturdy wooden door and to the east there's a heavy metal with a large padlock on it", false, new List<Item>(), false),
 
             new Room(2, "Outside", "The outside", true, new List<Item>(), true)
             //new Room(4, "Basement", "A spooky basement", false),

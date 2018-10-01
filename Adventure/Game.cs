@@ -28,12 +28,9 @@ namespace Adventure
             player = new Player(Console.ReadLine(), initPlayerInventory, 1);
             Console.Write($"\nWelcome {player.playerName}!\n");
 
-            //string str = "\nYou wake up in a small abandoned house. A sudden blinding light followed by a rumbling thunder startles you.\n" +
-            //    "The lightning illuminates the walls around you, revealing the decaying paint and rotting wood lining the walls.";
-
             //StringOutputFormatter(str, 1, 2);
             Console.Write("\nYou find yourself in a small abandoned house. A sudden blinding light followed by a rumbling thunder startles\n" +
-                "you from your slumber. The lightning illuminates the walls around you, revealing the decaying paint and rotting\n" +
+                "you from your slumber. The lightning illuminates the walls around you revealing the decaying paint and rotting\n" +
                 "wood lining the walls.\n");
         }
         #region Core
@@ -50,8 +47,8 @@ namespace Adventure
 
                 if (changedRoom)
                 {
-                    Console.Write("\n" + currentRoom[0].roomDescription + "\n\n"); // Skriver ut beskrivning av nuvarande rum
-                    //StringOutputFormatter(RoomList[player.currPosition].roomDescription, 1, 2);
+                    //Console.Write("\n" + currentRoom[0].roomDescription + "\n\n"); // Skriver ut beskrivning av nuvarande rum
+                    StringOutputFormatter(RoomList[player.currPosition].roomDescription, 1, 1);
 
                 } else if (lockedDoor == true)
                 {
@@ -63,24 +60,17 @@ namespace Adventure
             Console.WriteLine("\nCongratulations! You escaped and have won the game!\n");
         }
 
-        public void StringFormatter(string str)
-        {
-            string lines = string.Join(Environment.NewLine, str.Split()
-            .Select((word, index) => new { word, index })
-            .GroupBy(x => x.index / 9)
-            .Select(grp => string.Join(" ", grp.Select(x => x.word))));
-        }
-
         public void StringOutputFormatter(string str, int nrOfNewLinesBefore, int nrOfNewLinesAfter)
         {
-            const int textWidth = 200;
+            const int textWidth = 64;
 
-            string result = "";
+            //string result = "";
             string lineBuild = "";
 
             for (int i = 0; i < nrOfNewLinesBefore; i++)
             {
-                result += "\n";
+                //result += "\n";
+                Console.WriteLine();
             }
 
             string[] words = str.Split(' ');
@@ -91,8 +81,9 @@ namespace Adventure
                 if (lineBuild.Length > textWidth)
                 {
                     lineBuild = lineBuild.Substring(0, prevLen);
+                    Console.WriteLine(lineBuild);
                     i--;
-                    result += lineBuild + "\n";
+                    //result += lineBuild + "\n";
                     lineBuild = "";
                 }
                 else
@@ -103,11 +94,12 @@ namespace Adventure
 
             for (int i = 0; i < nrOfNewLinesAfter; i++)
             {
-                result += "\n";
+                //result += "\n";
+                Console.WriteLine();
             }
 
             // Output
-            Console.WriteLine(result);
+            //Console.Write(result);
         }
 
         private void Parse(string input)
@@ -332,11 +324,11 @@ namespace Adventure
         public void Look(List<string> words)
         {
             changedRoom = false;
-            Console.Write($"\n{RoomList[player.currPosition].roomDescription} ");
-            //StringOutputFormatter(RoomList[player.currPosition].roomDescription, 1, 2);
+            //Console.Write($"\n{RoomList[player.currPosition].roomDescription} ");
+            StringOutputFormatter(RoomList[player.currPosition].roomDescription, 1, 1);
             if (RoomList[player.currPosition].inventory.Count() > 0)
             {
-                Console.Write("\n\nItems in your vicinity\n\n");
+                Console.Write("Items in your vicinity\n\n");
                 for (int i = 0; i < RoomList[player.currPosition].inventory.Count(); i++)
                 {
                     Console.WriteLine($"[{i + 1}] { RoomList[player.currPosition].inventory[i].Name } ");
@@ -379,7 +371,7 @@ namespace Adventure
                     }
                     else
                     {
-                        Console.WriteLine($"\nYou have { secondaryList.Count() } { usedKeyword[0].ToString() } { tempItems[0].Keyword }s, which one do you want to look at?\n");
+                        Console.WriteLine($"\nYou have { secondaryList.Count() } { tempItems[0].Keyword } { usedKeyword[0].ToString() }s, which one do you want to look at?\n");
                     }
                 }
             }
@@ -510,7 +502,7 @@ namespace Adventure
         {
             var query = (from item in player.inventory
                          select item).ToList();
-            Console.Write("\n\n[INVENTORY]:\n");
+            Console.Write("\n[INVENTORY]:\n");
             for (int i=0; i < query.Count(); i++)
             {
                 Console.WriteLine($"[{i + 1}] {query[i].Name}");
@@ -604,7 +596,7 @@ namespace Adventure
                     {
                         if (words[i].ToUpper() == tempItems[j].SecondaryKeyword[k].ToUpper())
                         {
-                            
+                            if (secondaryList.Contains(tempItems[j])) break;
                             secondaryList.Add(tempItems[j]);
                             usedKeyword.Add(words[i].ToLower());
                         }
